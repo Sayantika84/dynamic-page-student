@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student App</title>
+</head>
+<body>
+
+<h2>Add Student</h2>
+
+<input type="text" id="name" placeholder="Name">
+<input type="number" id="age" placeholder="Age">
+<button onclick="addStudent()">Add</button>
+
+<h2>Students List</h2>
+<ul id="list"></ul>
+
+<script>
+async function addStudent() {
+    const name = document.getElementById("name").value;
+    const age = document.getElementById("age").value;
+
+    await fetch("/add", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, age })
+    });
+
+    loadStudents();
+}
+
+async function loadStudents() {
+    const res = await fetch("/students");
+    const data = await res.json();
+
+    const list = document.getElementById("list");
+    list.innerHTML = "";
+
+    data.forEach(s => {
+        const li = document.createElement("li");
+        li.textContent = s.name + " - " + s.age;
+        list.appendChild(li);
+    });
+}
+
+loadStudents();
+</script>
+
+</body>
+</html>
